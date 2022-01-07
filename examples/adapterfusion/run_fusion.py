@@ -389,12 +389,14 @@ def main():
                 adapter_fusion = adapter_args.load_adapter.split("-")
                 if adapter_fusion[0]=="AdapterFusion":
                     selected_adapters = adapter_fusion[1][1:-1].split(",")
+                    adapter_setup = [[]]
                     for selected_adapter in selected_adapters:
                         model.load_adapter(selected_adapter, config=adapter_config, with_head=False)
+                        adapter_setup[0].append(selected_adapter[-5:])
 
                     # Add a fusion layer and tell the model to train fusion
-                    model.add_adapter_fusion(["si_ta","en_ta"], "dynamic")
-                    model.train_adapter_fusion([["si_ta","en_ta"]])
+                    model.add_adapter_fusion(adapter_setup[0], "dynamic")
+                    model.train_adapter_fusion(adapter_setup)
                 else:
                     model.load_adapter(
                         adapter_args.load_adapter,
