@@ -394,7 +394,8 @@ def main():
                     for selected_adapter in selected_adapters:
                         model.load_adapter(selected_adapter, config=adapter_config, with_head=False)
                         adapter_setup[0].append(selected_adapter[-5:])
-                        all_adapters_string_for_save_adapter_fusion += selected_adapter[-5:]
+                        all_adapters_string_for_save_adapter_fusion += selected_adapter[-5:] + ","
+                    all_adapters_string_for_save_adapter_fusion = all_adapters_string_for_save_adapter_fusion[0:-1]
                     if adapter_fusion[2] == "load_AdapterFusion":
                         loaded_adapter_fusion_name = model.load_adapter_fusion(adapter_fusion_name_or_path=adapter_fusion[3][1:-1], set_active=True)
                         logger.info("********AdapterFusion added************** "+loaded_adapter_fusion_name)
@@ -627,7 +628,7 @@ def main():
             checkpoint = last_checkpoint
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
         trainer.save_model()  # Saves the tokenizer too for easy upload
-        
+
         metrics = train_result.metrics
         max_train_samples = (
             data_args.max_train_samples if data_args.max_train_samples is not None else len(train_dataset)
