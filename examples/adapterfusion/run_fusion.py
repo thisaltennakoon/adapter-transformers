@@ -396,7 +396,7 @@ def main():
                         adapter_setup[0].append(selected_adapter[-5:])
                         all_adapters_string_for_save_adapter_fusion += selected_adapter[-5:] + ","
                     all_adapters_string_for_save_adapter_fusion = all_adapters_string_for_save_adapter_fusion[0:-1]
-                    if adapter_fusion[2] == "load_AdapterFusion":
+                    if len(adapter_fusion)==4 and adapter_fusion[2] == "load_AdapterFusion":
                         loaded_adapter_fusion_name = model.load_adapter_fusion(adapter_fusion_name_or_path=adapter_fusion[3][1:-1], set_active=True)
                         logger.info("********AdapterFusion added************** "+loaded_adapter_fusion_name)
                     else:
