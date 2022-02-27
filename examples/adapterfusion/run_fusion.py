@@ -627,9 +627,7 @@ def main():
             checkpoint = last_checkpoint
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
         trainer.save_model()  # Saves the tokenizer too for easy upload
-        # model.save_adapter_fusion(training_args.output_dir,adapter_setup[0])
-        model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
-
+        
         metrics = train_result.metrics
         max_train_samples = (
             data_args.max_train_samples if data_args.max_train_samples is not None else len(train_dataset)
@@ -639,6 +637,7 @@ def main():
         trainer.log_metrics("train", metrics)
         trainer.save_metrics("train", metrics)
         trainer.save_state()
+        model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
 
     # Evaluation
     results = {}
