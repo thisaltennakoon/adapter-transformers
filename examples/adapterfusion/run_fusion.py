@@ -390,9 +390,11 @@ def main():
                 if adapter_fusion[0]=="AdapterFusion":
                     selected_adapters = adapter_fusion[1][1:-1].split(",")
                     adapter_setup = [[]]
+                    all_adapters_string_for_save_adapter_fusion = ""
                     for selected_adapter in selected_adapters:
                         model.load_adapter(selected_adapter, config=adapter_config, with_head=False)
                         adapter_setup[0].append(selected_adapter[-5:])
+                        all_adapters_string_for_save_adapter_fusion += selected_adapter[-5:]
 
                     # Add a fusion layer and tell the model to train fusion
                     model.add_adapter_fusion(adapter_setup[0], "dynamic")
@@ -622,7 +624,8 @@ def main():
             checkpoint = last_checkpoint
         train_result = trainer.train(resume_from_checkpoint=checkpoint)
         trainer.save_model()  # Saves the tokenizer too for easy upload
-        model.save_adapter_fusion(training_args.output_dir,adapter_setup[0])
+        # model.save_adapter_fusion(training_args.output_dir,adapter_setup[0])
+        model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
 
         metrics = train_result.metrics
         max_train_samples = (
