@@ -387,16 +387,22 @@ def main():
             # load a pre-trained from Hub if specified
             if adapter_args.load_adapter:
                 adapter_fusion = adapter_args.load_adapter.split("-")
-                if adapter_fusion[0]=="AdapterFusion":
+                if adapter_fusion[0] == "AdapterFusion":
                     selected_adapters = adapter_fusion[1][1:-1].split(",")
                     adapter_setup = [[]]
+                    all_adapters_string_for_save_adapter_fusion = ""
                     for selected_adapter in selected_adapters:
                         model.load_adapter(selected_adapter, config=adapter_config, with_head=False)
                         adapter_setup[0].append(selected_adapter[-5:])
-
-                    # Add a fusion layer and tell the model to train fusion
-                    model.add_adapter_fusion(adapter_setup[0], "dynamic")
-                    model.train_adapter_fusion(adapter_setup)
+                        all_adapters_string_for_save_adapter_fusion += selected_adapter[-5:] + ","
+                    all_adapters_string_for_save_adapter_fusion = all_adapters_string_for_save_adapter_fusion[0:-1]
+                    if len(adapter_fusion)==4 and adapter_fusion[2] == "load_AdapterFusion":
+                        loaded_adapter_fusion_name = model.load_adapter_fusion(adapter_fusion_name_or_path=adapter_fusion[3][1:-1], set_active=True)
+                        logger.info("********AdapterFusion added************** "+loaded_adapter_fusion_name)
+                    else:
+                        # Add a fusion layer and tell the model to train fusion
+                        model.add_adapter_fusion(adapter_setup[0], "dynamic")
+                        model.train_adapter_fusion(adapter_setup)
                 else:
                     model.load_adapter(
                         adapter_args.load_adapter,
@@ -632,6 +638,7 @@ def main():
         trainer.log_metrics("train", metrics)
         trainer.save_metrics("train", metrics)
         trainer.save_state()
+        model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
 
     # Evaluation
     results = {}
