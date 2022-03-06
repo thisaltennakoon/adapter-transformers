@@ -640,7 +640,7 @@ def main():
         trainer.save_metrics("train", metrics)
         trainer.save_state()
         model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
-        model.save_head(training_args.output_dir, data_args.task_name)
+        model.save_head(training_args.output_dir, task_name)
 
     # Evaluation
     results = {}
