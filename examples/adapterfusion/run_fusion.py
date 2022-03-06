@@ -402,8 +402,8 @@ def main():
                         logger.info("********AdapterFusion added************** "+loaded_adapter_fusion_name)
                     else:
                         # Add a fusion layer and tell the model to train fusion
-                        model.add_classification_head(task_name)
-                        model.add_adapter_fusion(adapter_setup[0], "dynamic")
+                        #model.add_classification_head(task_name)
+                        model.add_adapter_fusion(adapter_setup[0], "dynamic", set_active=True)
                         model.train_adapter_fusion(adapter_setup)
                 else:
                     model.load_adapter(
