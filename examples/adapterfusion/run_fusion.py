@@ -398,6 +398,7 @@ def main():
                     all_adapters_string_for_save_adapter_fusion = all_adapters_string_for_save_adapter_fusion[0:-1]
                     if len(adapter_fusion)==4 and adapter_fusion[2] == "load_AdapterFusion":
                         loaded_adapter_fusion_name = model.load_adapter_fusion(adapter_fusion_name_or_path=adapter_fusion[3][1:-1], set_active=True)
+                        model.load_head(adapter_fusion[3][1:-1])
                         logger.info("********AdapterFusion added************** "+loaded_adapter_fusion_name)
                     else:
                         # Add a fusion layer and tell the model to train fusion
@@ -639,6 +640,7 @@ def main():
         trainer.save_metrics("train", metrics)
         trainer.save_state()
         model.save_adapter_fusion(training_args.output_dir, all_adapters_string_for_save_adapter_fusion)
+        model.save_head(training_args.output_dir, data_args.task_name)
 
     # Evaluation
     results = {}
