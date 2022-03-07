@@ -431,12 +431,15 @@ def main():
         else:
             lang_adapter_name = None
         # Freeze all model weights except of those of this adapter
-        model.train_adapter([task_name])
-        # Set the adapters to be used in every forward pass
-        if lang_adapter_name:
-            model.set_active_adapters(ac.Stack(lang_adapter_name, task_name))
+        if adapter_fusion[0] == "AdapterFusion":
+            pass
         else:
-            model.set_active_adapters([task_name])
+            model.train_adapter([task_name])
+            # Set the adapters to be used in every forward pass
+            if lang_adapter_name:
+                model.set_active_adapters(ac.Stack(lang_adapter_name, task_name))
+            else:
+                model.set_active_adapters([task_name])
     else:
         if adapter_args.load_adapter or adapter_args.load_lang_adapter:
             raise ValueError(
