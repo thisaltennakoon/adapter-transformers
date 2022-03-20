@@ -17,6 +17,7 @@
 Fine-tuning the library models for sequence to sequence.
 """
 # You can also adapt this script on your own sequence to sequence task. Pointers for this are left as comments.
+#--model_name_or_path facebook/mbart-large-50 --do_train --do_eval --do_predict --train_file D:\AdapterFusionEnSiFusionhoulsbyUsingAllAdapters\DataSets1\SiTa\parallel-27.04.2021-trUnique56K.si-en-ta.SiTa.json --validation_file D:\AdapterFusionEnSiFusionhoulsbyUsingAllAdapters\DataSets1\SiTa\parallel-27.04.2021-tu.un.si-en-ta.SiTa.json --test_file D:\AdapterFusionEnSiFusionhoulsbyUsingAllAdapters\DataSets1\SiTa\parallel-27.04.2021-ts.un.si-en-ta.SiTa.json --source_lang si_LK --target_lang ta_IN --output_dir D:\pivot_based_stepwise_pre_training_using_adapters\SiTa\step3 --per_device_train_batch_size=2 --per_device_eval_batch_size=2 --overwrite_output_dir --predict_with_generate --forced_bos_token ta_IN --save_steps 50000 --num_beams 10 --train_adapter --adapter_config houlsby --adapter_reduction_factor 2 --evaluation_strategy epoch --metric_for_best_model eval_bleu --patience 2 --learning_rate 1e-4 --num_train_epochs 1 --load_adapter pivot_based_stepwise_pre_training_using_adapters_final-[D:\pivot_based_stepwise_pre_training_using_adapters\SiTa\step2\frozen_pivot_encoder,D:\pivot_based_stepwise_pre_training_using_adapters\SiTa\step2\target_decoder]
 
 import logging
 import os
@@ -394,15 +395,14 @@ def main():
                     # task_name += "_using_" + selected_adapter_for_the_encoder[-5:] + "&" + selected_adapter_for_the_decoder[-5:]
                     model.load_adapter(selected_adapter_for_the_encoder, config=adapter_config,
                                        leave_out=[12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-                                       load_as=data_args.source_lang.split("_")[0])
+                                       load_as="source_encoder")
                     model.load_adapter(selected_adapter_for_the_decoder, config=adapter_config,
                                        leave_out=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                                       load_as=data_args.target_lang.split("_")[0])
+                                       load_as="target_decoder")
                     # Freeze all model weights except of those of this adapter layers in decoder of the target side
-                    model.train_adapter([data_args.source_lang.split("_")[0], data_args.target_lang.split("_")[0]])
+                    model.train_adapter(["source_encoder", "target_decoder"])
                     # Set the adapters to be used in every forward pass
-                    model.set_active_adapters(
-                        [data_args.source_lang.split("_")[0], data_args.target_lang.split("_")[0]])
+                    model.set_active_adapters(["source_encoder", "target_decoder"])
                 else:
                     model.load_adapter(
                         adapter_args.load_adapter,
