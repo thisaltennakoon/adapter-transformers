@@ -402,7 +402,7 @@ def main():
                     else:
                         model.add_adapter_fusion(adapter_setup[0])
                         model.set_active_adapters(adapter_setup)
-                    model.train_adapter_fusion(adapter_setup)
+                    model.train_adapter_fusion(adapter_setup,unfreeze_adapters=True)
                 else:
                     model.load_adapter(
                         adapter_args.load_adapter,
