@@ -354,8 +354,8 @@ def main():
     )
 
     model1 = MBartForConditionalGeneration.from_pretrained(
-        "D:\encoder_decoder_seperation\SiEnTrainedModel",
-        from_tf=bool(".ckpt" in "D:\encoder_decoder_seperation\SiEnTrainedModel"),
+        "BaselineGeneration/SiEn",
+        from_tf=bool(".ckpt" in "BaselineGeneration/SiEn"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
@@ -363,8 +363,8 @@ def main():
     )
 
     model2 = MBartForConditionalGeneration.from_pretrained(
-        "D:\encoder_decoder_seperation\EnTaTrainedModel",
-        from_tf=bool(".ckpt" in "D:\encoder_decoder_seperation\EnTaTrainedModel"),
+        "BaselineGeneration/EnTa",
+        from_tf=bool(".ckpt" in "BaselineGeneration/EnTa"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
