@@ -354,8 +354,8 @@ def main():
     )
 
     model1 = MBartForConditionalGeneration.from_pretrained(
-        "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/SiEn",
-        from_tf=bool(".ckpt" in "BaselineGeneration/SiEn"),
+        "/content/drive/Shareddrives/FYP/backup/adapter/BaselineGeneration/TaEn",
+        from_tf=bool(".ckpt" in "/content/drive/Shareddrives/FYP/backup/adapter/BaselineGeneration/TaEn"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
@@ -363,8 +363,8 @@ def main():
     )
 
     model2 = MBartForConditionalGeneration.from_pretrained(
-        "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/EnTa",
-        from_tf=bool(".ckpt" in "BaselineGeneration/EnTa"),
+        "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/EnSi",
+        from_tf=bool(".ckpt" in "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/EnSi"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
