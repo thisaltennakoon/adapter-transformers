@@ -353,23 +353,18 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
     )
 
-    model = MBartForConditionalGeneration.from_pretrained(
-        model_args.model_name_or_path,
-        from_tf=bool(".ckpt" in model_args.model_name_or_path),
+    model1 = MBartForConditionalGeneration.from_pretrained(
+        "/content/drive/Shareddrives/FYP/backup/adapter/BaselineGeneration/TaEn",
+        from_tf=bool(".ckpt" in "/content/drive/Shareddrives/FYP/backup/adapter/BaselineGeneration/TaEn"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
 
-    model.resize_token_embeddings(len(tokenizer))
-
-    model.set_decoder(None)
-    model.freeze_model()
-
-    model1 = AutoModelForSeq2SeqLM.from_pretrained(
-        "facebook/mbart-large-50",
-        from_tf=bool(".ckpt" in "facebook/mbart-large-50"),
+    model2 = MBartForConditionalGeneration.from_pretrained(
+        "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/EnSi",
+        from_tf=bool(".ckpt" in "/content/drive/Shareddrives/FYPSharedWithSarubi/backup/adapter/BaselineGeneration/EnSi"),
         config=config,
         cache_dir=model_args.cache_dir,
         revision=model_args.model_revision,
@@ -377,10 +372,14 @@ def main():
     )
 
     model1.resize_token_embeddings(len(tokenizer))
+    model2.resize_token_embeddings(len(tokenizer))
 
-    model.set_decoder(model1.get_decoder())
-    model1 = None
+    model1.set_decoder(None)
+    model1.set_decoder(model2.get_decoder())
+    model2 = None
+    model = model1
 
+    model.resize_token_embeddings(len(tokenizer))
     # Set decoder_start_token_id
     if model.config.decoder_start_token_id is None and isinstance(tokenizer, (MBartTokenizer, MBartTokenizerFast)):
         if isinstance(tokenizer, MBartTokenizer):
