@@ -1164,6 +1164,12 @@ class MBartModel(BartModelAdaptersMixin, MBartPreTrainedModel):
     def get_decoder(self):
         return self.decoder
 
+    def set_encoder(self, new_encoder):
+        self.encoder = new_encoder
+
+    def set_decoder(self, new_decoder):
+        self.decoder = new_decoder
+
     @add_start_docstrings_to_model_forward(MBART_INPUTS_DOCSTRING)
     @add_code_sample_docstrings(
         tokenizer_class=_TOKENIZER_FOR_DOC,
@@ -1367,6 +1373,15 @@ class MBartForConditionalGeneration(ModelWithHeadsAdaptersMixin, MBartPreTrained
 
     def get_decoder(self):
         return self.model.get_decoder()
+
+    def set_encoder(self, new_encoder):
+        self.model.set_encoder(new_encoder)
+
+    def set_decoder(self, new_decoder):
+        self.model.set_decoder(new_decoder)
+
+    def freeze_model(self, freeze=True):
+        super().freeze_model(freeze)
 
     def resize_token_embeddings(self, new_num_tokens: int) -> nn.Embedding:
         new_embeddings = super().resize_token_embeddings(new_num_tokens)

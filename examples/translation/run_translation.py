@@ -48,7 +48,7 @@ from transformers import (
     Seq2SeqTrainer,
     Seq2SeqTrainingArguments,
     default_data_collator,
-    set_seed,
+    set_seed, MBartForConditionalGeneration,
 )
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version
@@ -352,7 +352,8 @@ def main():
         revision=model_args.model_revision,
         use_auth_token=True if model_args.use_auth_token else None,
     )
-    model = AutoModelForSeq2SeqLM.from_pretrained(
+
+    model = MBartForConditionalGeneration.from_pretrained(
         model_args.model_name_or_path,
         from_tf=bool(".ckpt" in model_args.model_name_or_path),
         config=config,
@@ -362,6 +363,23 @@ def main():
     )
 
     model.resize_token_embeddings(len(tokenizer))
+
+    model.set_decoder(None)
+    model.freeze_model()
+
+    model1 = AutoModelForSeq2SeqLM.from_pretrained(
+        "facebook/mbart-large-50",
+        from_tf=bool(".ckpt" in "facebook/mbart-large-50"),
+        config=config,
+        cache_dir=model_args.cache_dir,
+        revision=model_args.model_revision,
+        use_auth_token=True if model_args.use_auth_token else None,
+    )
+
+    model1.resize_token_embeddings(len(tokenizer))
+
+    model.set_decoder(model1.get_decoder())
+    model1 = None
 
     # Set decoder_start_token_id
     if model.config.decoder_start_token_id is None and isinstance(tokenizer, (MBartTokenizer, MBartTokenizerFast)):
